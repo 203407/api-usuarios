@@ -24,8 +24,8 @@ export class PostgresClienteRepository implements ClienteRepository {
         return false;
       } else {
         const sql =
-          "INSERT INTO usuarios (id,usuario,passw) VALUES ($1, $2, $3) RETURNING *";
-        const values = [cliente.id, cliente.usuario, cliente.passw];
+          "INSERT INTO usuarios (id,usuario,passw,confirm_passw) VALUES ($1, $2, $3, $4) RETURNING *";
+        const values = [cliente.id, cliente.usuario, cliente.passw, cliente.confirmPassw];
 
         try {
           const result = await pool.query(sql, values);
@@ -69,6 +69,7 @@ export class PostgresClienteRepository implements ClienteRepository {
           id: matchedRow.id,
           usuario: matchedRow.usuario,
           passw: matchedRow.passw,
+          confirmPassw: matchedRow.passw
         };
 
         return createdCliente;
