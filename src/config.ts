@@ -1,5 +1,8 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+
 export const config = {
   server: {
-    port: process.env.PORT || 3000,
+    port: process.env.PORTT || 3000,
   },
 };

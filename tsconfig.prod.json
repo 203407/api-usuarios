@@ -3,5 +3,9 @@
   "compilerOptions": {
     "baseUrl": ".",
   },
+  "include": [
+    "src/**/*.ts",
+    ".env" // Incluye el archivo .env aquí
+  ],
   "exclude": ["node_modules", "tests", "playground"]
 }

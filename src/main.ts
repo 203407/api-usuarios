@@ -3,16 +3,17 @@
 
 import bodyParser from "body-parser";
 import cors from "cors"; // I
+import * as dotenv from "dotenv";
 import express from "express";
-import path from "path";
 
 import { config } from "./config";
 import { healthRouter } from "./health/health-router";
 import { usuarioRouter } from "./paciente/infraestructure/usuario-router";
 
+dotenv.config();
+
 function boostrap() {
   const app = express();
-  app.use(express.static("uploads"));
 
   app.use(
     cors({
@@ -23,12 +24,6 @@ function boostrap() {
   app.use(bodyParser.json());
   app.use("/health", healthRouter);
   app.use("/", usuarioRouter);
-
-  app.get("/uploads/:filename", (req, res) => {
-    const filename = req.params.filename;
-    const imagePath = path.join(__dirname, "uploads", filename);
-    res.sendFile(imagePath);
-  });
 
   const { port } = config.server;
 
