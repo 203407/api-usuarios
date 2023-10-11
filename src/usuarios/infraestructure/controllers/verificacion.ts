@@ -13,8 +13,7 @@ export const authorize = async (
 ) => {
   try {
     const token = req.headers.authorization;
-    // console.log(token)
-    // verify request has token
+
     if (!token) {
       return res.status(401).json({ message: "Invalid token " });
     }
@@ -26,8 +25,6 @@ export const authorize = async (
     } else {
       res.status(403).send({ error: "Error de inicio de sesión" });
     }
-
-    // next();
   } catch (error) {
     res.status(500).json({ message: "Failed to authenticate user" });
   }

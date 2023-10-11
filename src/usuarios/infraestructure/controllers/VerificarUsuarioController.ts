@@ -16,7 +16,6 @@ export class VerificarClienteController {
       );
 
       if (verificacion != null) {
-        console.log("buen inicio de sesion");
         const secretKey = "203407";
         const token = jwt.sign({ id: verificacion.id }, secretKey, {
           expiresIn: "10h",
@@ -24,7 +23,6 @@ export class VerificarClienteController {
 
         res.send({ token });
       }
-      // res.status(200).json(verificacion);
     } catch (error) {
       res.status(500).json(error);
     }

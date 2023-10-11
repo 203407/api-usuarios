@@ -8,7 +8,7 @@ import express from "express";
 
 import { config } from "./config";
 import { healthRouter } from "./health/health-router";
-import { usuarioRouter } from "./paciente/infraestructure/usuario-router";
+import { usuarioRouter } from "./usuarios/infraestructure/usuario-router";
 
 dotenv.config();
 

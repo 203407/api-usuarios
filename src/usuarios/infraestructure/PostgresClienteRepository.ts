@@ -3,42 +3,26 @@ import * as crypto from "crypto";
 import { pool } from "../../database";
 import { Cliente } from "../domain/usuario";
 import { ClienteRepository } from "../domain/UsuarioRepository";
-// const jwt = require("jsonwebtoken")
-
-// import jwt from "jsonwebtoken";
-
-// const secret = "203407"
 
 export class PostgresClienteRepository implements ClienteRepository {
   async createCliente(cliente: Cliente): Promise<Cliente | null | boolean> {
-    const sql1 = "SELECT * FROM usuarios";
+    const sql =
+      "INSERT INTO usuarios (id,usuario,passw,confirm_passw) VALUES ($1, $2, $3, $4) RETURNING *";
+    const values = [
+      cliente.id,
+      cliente.usuario,
+      cliente.passw,
+      cliente.confirmPassw,
+    ];
 
     try {
-      const result = await pool.query(sql1);
+      const result = await pool.query(sql, values);
 
-      const matchedRow = result.rows.find(
-        (row) => row.correo === cliente.usuario
-      );
-
-      if (matchedRow) {
-        return false;
-      } else {
-        const sql =
-          "INSERT INTO usuarios (id,usuario,passw) VALUES ($1, $2, $3) RETURNING *";
-        const values = [cliente.id, cliente.usuario, cliente.passw];
-
-        try {
-          const result = await pool.query(sql, values);
-
-          if (result.rows.length > 0) {
-            return true;
-          }
-
-          return null;
-        } catch (error) {
-          throw error;
-        }
+      if (result.rows.length > 0) {
+        return true;
       }
+
+      return null;
     } catch (error) {
       throw error;
     }
@@ -69,6 +53,7 @@ export class PostgresClienteRepository implements ClienteRepository {
           id: matchedRow.id,
           usuario: matchedRow.usuario,
           passw: matchedRow.passw,
+          confirmPassw: matchedRow.confirmpassw,
         };
 
         return createdCliente;

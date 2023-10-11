@@ -11,7 +11,6 @@ export class CreateClienteController {
   async run(req: Request, res: Response) {
     const formData = req.body;
 
-    const imgPaths = [];
     const uniqueId = String(uuidv4());
 
     const salt = "a1b2c3d4e5";
@@ -20,14 +19,9 @@ export class CreateClienteController {
     hash.update(contraseñaConSalt);
     const hashFinal = hash.digest("hex");
 
-    const files: Express.Multer.File[] = req.files as Express.Multer.File[];
-
     try {
-      if (files.length > 0) {
-        imgPaths.push(`/uploads/${files[0].filename}`);
-      }
       const clienteData = await this.createClienteUseCase.run(
-        new Cliente(uniqueId, formData.usuario, hashFinal)
+        new Cliente(uniqueId, formData.usuario, hashFinal, hashFinal)
       );
       res.status(200).json(clienteData);
     } catch (error) {
