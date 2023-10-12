@@ -22,6 +22,8 @@ export class VerificarClienteController {
         });
 
         res.send({ token });
+      } else {
+        res.send(Error);
       }
     } catch (error) {
       res.status(500).json(error);

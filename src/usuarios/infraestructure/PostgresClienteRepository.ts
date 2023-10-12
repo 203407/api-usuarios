@@ -32,8 +32,6 @@ export class PostgresClienteRepository implements ClienteRepository {
     usuario: string,
     passw: string
   ): Promise<Cliente | null> {
-    const sql = "SELECT * FROM usuarios";
-
     const salt = "a1b2c3d4e5";
     const hash = crypto.createHash("sha256");
 
@@ -41,27 +39,48 @@ export class PostgresClienteRepository implements ClienteRepository {
     hash.update(contraseñaConSalt);
     const hashFinal = hash.digest("hex");
 
+    const sql = "SELECT * FROM usuarios where usuario = $1 and passw = $2";
+
+    const values = [usuario, hashFinal];
+
     try {
-      const result = await pool.query(sql);
+      const result = await pool.query(sql, values);
 
-      const matchedRow = result.rows.find(
-        (row) => row.usuario === usuario && row.passw === hashFinal
-      );
-
-      if (matchedRow) {
-        const createdCliente: Cliente = {
-          id: matchedRow.id,
-          usuario: matchedRow.usuario,
-          passw: matchedRow.passw,
-          confirmPassw: matchedRow.confirmpassw,
-        };
-
-        return createdCliente;
+      if (result.rows.length > 0) {
+        const cliente: Cliente[] = result.rows.map((p: any) => ({
+          id: p.id,
+          usuario: p.usuario,
+          passw: p.passw,
+          confirmPassw: p.confirm_passw,
+        }));
+        return cliente[0];
       }
-
       return null;
     } catch (error) {
       throw error;
     }
+
+    // try {
+    //   const result = await pool.query(sql);
+
+    //   const matchedRow = result.rows.find(
+    //     (row) => row.usuario === usuario && row.passw === hashFinal
+    //   );
+
+    //   if (matchedRow) {
+    //     const createdCliente: Cliente = {
+    //       id: matchedRow.id,
+    //       usuario: matchedRow.usuario,
+    //       passw: matchedRow.passw,
+    //       confirmPassw: matchedRow.confirmpassw,
+    //     };
+
+    //     return createdCliente;
+    //   }
+
+    //   return null;
+    // } catch (error) {
+    //   throw error;
+    // }
   }
 }
